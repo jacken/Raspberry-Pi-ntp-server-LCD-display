@@ -1,6 +1,5 @@
 #! /usr/bin/python
 # Written by Jacken Zimmermann http://www.jackenhack.com
-# License: GPL 2.0
 # Big screen character clock code written by Adrian Allan 
 # http://allan.me/2015/10/30/a-very-simple-raspberry-pi-clock-using-adafruit-16x2-lcd-pi-plate/
 
