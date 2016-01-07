@@ -75,8 +75,8 @@ class lcdScreen(object):
 #    self.switchScreenTime = 8 #Number of seconds between switching screens
     self.lastScreenTime = time.time()    # time since last screen switch
     self.prevStr = ""
-    self.screens = ((self.bigTimeView,2),
-                    (self.connectedUserView,5),
+    self.screens = ((self.bigTimeView,10),          # Rotating list of views on LCD with how many seconds to display each display. Round robin style.
+                    (self.connectedUserView,4),
                     (self.bigTimeView,10),
                     (self.precisionView,4),
                     (self.bigTimeView,10),
@@ -90,11 +90,11 @@ class lcdScreen(object):
 
   def writeLCD(self, s):
     """Checks the string, if different than last call, update screen."""
-    if self.prevStr.decode("ISO-8859-1") != s.decode("ISO-8859-1"):
+    if self.prevStr.decode("ISO-8859-1") != s.decode("ISO-8859-1"):  # Oh what a shitty way around actually learning the ins and outs of encoding chars...
       # Display string has changed, update LCD
       self.lcd.clear()
       self.lcd.message(s)
-      self.prevStr = s  # Save so we can test if screen changed between calls
+      self.prevStr = s  # Save so we can test if screen changed between calls, don't update if not needed to reduce flicker
 
   def bigTimeView(self):
     """Shows custom large local time on LCD"""
