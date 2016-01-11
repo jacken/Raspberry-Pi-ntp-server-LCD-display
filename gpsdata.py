@@ -75,13 +75,13 @@ class lcdScreen(object):
 #    self.switchScreenTime = 8 #Number of seconds between switching screens
     self.lastScreenTime = time.time()    # time since last screen switch
     self.prevStr = ""
-    self.screens = ((self.bigTimeView,10),          # Rotating list of views on LCD with how many seconds to display each display. Round robin style.
+    self.screens = ((self.bigTimeView,6),          # Rotating list of views on LCD with how many seconds to display each display. Round robin style.
                     (self.connectedUserView,4),
-                    (self.bigTimeView,10),
+                    (self.bigTimeView,6),
                     (self.precisionView,4),
-                    (self.bigTimeView,10),
+                    (self.bigTimeView,6),
                     (self.ntptimeInfo,5),
-                    (self.bigTimeView,10),
+                    (self.bigTimeView,6),
                     (self.clockperfView,5),
                     ) # list of all views for rotation
                     
@@ -183,7 +183,6 @@ class lcdScreen(object):
     highestCount = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $4}' | sort -nrk1,1 | line", shell=True)  # Gets the highest connections from connected clients
     theStr = "Con users: {:>6}".format(output)
     theStr += "Hi cons: {:>8}".format(highestCount)
-    print theStr
     self.writeLCD(theStr)
     
 
