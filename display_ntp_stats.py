@@ -145,7 +145,7 @@ class lcdScreen(object):
   def ntptimeInfo(self):
     """Statistics from ntptime command"""
     output = subprocess.check_output("ntptime", shell=True)
-    precision = re.search( r'precision (.* us).*(?:\n|\r\n?).* stability (.* ppm)', output, re.M|re.I)
+    precision = re.search( r'precision (.* us).*stability (.* ppm)', output, re.M|re.S)
     theStr = "Precis: {:>8}\n".format(precision.group(1))
     theStr += "Stabi: {:>9}".format(precision.group(2))
     self.writeLCD(theStr)
