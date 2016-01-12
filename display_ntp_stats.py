@@ -139,7 +139,7 @@ class lcdScreen(object):
       precision = float(search.group(1))
       precision = (1/2.0**abs(precision))*1000000.0
       theStr = "Prec: {:.5f} {}s\n".format(precision,chr(0xE4))
-      theStr += "Jitter: {:>5} ms\n".format(search.group(2))
+      theStr += "Jitter: {:>5} ms".format(search.group(2))
     self.writeLCD(theStr)
 
   def ntptimeInfo(self):
@@ -153,10 +153,9 @@ class lcdScreen(object):
   def clockperfView(self):
     """Shows jitter etc"""
     output = subprocess.check_output("ntptime", shell=True)
-    offset = re.search( r'offset (.* us)', output, re.M|re.I)
-    jitter = re.search( r'jitter (.* us)', output, re.M|re.I)
-    theStr = "Offset: " + offset.group(1) + '\n'
-    theStr += "OSjitt: " + jitter.group(1)
+    search = re.search( r'TAI offset.*offset (.*? us).*jitter (.* us)', output, re.M|re.S)
+    theStr = "Offset: {:>8}\n".format(search.group(1))
+    theStr += "OSjitt: {:>8}".format(search.group(2))
     self.writeLCD(theStr)
     
   def updateLCD(self):
@@ -189,7 +188,7 @@ if __name__ == '__main__':
                       datefmt='%Y-%m-%d %H:%M:%S')
 
   # Initialize the LCD screen
-  mylcd = lcdScreen(WHITE, "Jackens Atomic\nNTP/GPS Server")
+  mylcd = lcdScreen(WHITE, "Atomic Clock\nNTP/GPS Server")
   sleep(2)
   
   while True:
