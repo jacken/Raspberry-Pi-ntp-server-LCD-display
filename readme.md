@@ -46,5 +46,3 @@ and add the line
 
 to crontab, save and it will start the clock display on every boot.
 
-
-[^gpsdo]: GPS disciplined oscillator, usually a controlled oven heated crystal or a Rubidium oscillator slaved to the atomic clocks from the GPS satellites.
