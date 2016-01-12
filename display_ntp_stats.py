@@ -2,6 +2,7 @@
 # Written by Jacken Zimmermann http://www.jackenhack.com
 # Big screen character clock code written by Adrian Allan 
 # http://allan.me/2015/10/30/a-very-simple-raspberry-pi-clock-using-adafruit-16x2-lcd-pi-plate/
+# Adafruit CharLCDPlate code Written by Adafruit Industries. https://www.adafruit.com/products/716
 
 from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
 import os
