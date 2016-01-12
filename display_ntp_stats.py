@@ -94,7 +94,7 @@ class lcdScreen(object):
       # Display string has changed, update LCD
       self.lcd.clear()
       self.lcd.message(s)
-      self.prevStr = s  # Save so we can test if screen changed between calls, don't update if not needed to reduce flicker
+      self.prevStr = s  # Save so we can test if screen changed between calls, don't update if not needed to reduce LCD flicker
 
   def bigTimeView(self):
     """Shows custom large local time on LCD"""
@@ -134,28 +134,20 @@ class lcdScreen(object):
     precision = ""
     clkjitter = ""
     clkwander = ""
-    for row in output.split('\n'):
-      searchPrecision = re.search( r'.*precision=(.*?),', row, re.M|re.I)
-      if searchPrecision:
-        precision = float(searchPrecision.group(1))
-        precision = (1/2.0**abs(precision))*1000000.0
-        precision = "Prec " + str(precision)[:8] + ' ' + chr(0xE4) + 's'
-      searchClk = re.search( r'.*clk_jitter=(.*?),.*clk_wander=(.*?)$', row, re.M|re.I)
-      if searchClk:
-        clkjitter = searchClk.group(1)
-        clkjitter = "Jitter  " + str(clkjitter) + ' ms'
-        clkwander = searchClk.group(2)
-        clkwander = "clwand " + str(clkwander) + "PPM"
-    self.writeLCD(precision + '\n' + clkjitter)
+    search = re.search( r'.*precision=(.*?),.*clk_jitter=(.*),', output, re.M|re.S)
+    if search:
+      precision = float(search.group(1))
+      precision = (1/2.0**abs(precision))*1000000.0
+      theStr = "Prec: {:.5f} {}s\n".format(precision,chr(0xE4))
+      theStr += "Jitter: {:>5} ms\n".format(search.group(2))
+    self.writeLCD(theStr)
 
   def ntptimeInfo(self):
     """Statistics from ntptime command"""
     output = subprocess.check_output("ntptime", shell=True)
-    precision = re.search( r'precision (.* us)', output, re.M|re.I)
-    stability = re.search( r'stability (.* ppm)', output, re.M|re.I)
-    theStr = "Precis: " + precision.group(1) + '\n'
-    theStr += "Stabi: " + stability.group(1)
-#      stability = re.search( r'.*stability(.*?ppm),', row, re.M|re.I)        
+    precision = re.search( r'precision (.* us).*(?:\n|\r\n?).* stability (.* ppm)', output, re.M|re.I)
+    theStr = "Precis: {:>8}\n".format(precision.group(1))
+    theStr += "Stabi: {:>9}".format(precision.group(2))
     self.writeLCD(theStr)
 
   def clockperfView(self):
