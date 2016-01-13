@@ -145,7 +145,12 @@ class lcdScreen(object):
 
   def ntptimeInfo(self):
     """Statistics from ntptime command"""
-    output = subprocess.check_output("ntptime", shell=True)
+    try:
+      output = subprocess.check_output("ntptime", shell=True)
+    except CalledProcessError as e:
+        output = e.output
+        returncode = e.returncode
+        print returncode
     precision = re.search( r'precision (.* us).*stability (.* ppm)', output, re.M|re.S)
     theStr = "Precis: {:>8}\n".format(precision.group(1))
     theStr += "Stabi: {:>9}".format(precision.group(2))
@@ -171,7 +176,13 @@ class lcdScreen(object):
       
   def connectedUserView(self):
     """Shows connected clients to ntpd"""
-    output = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $1}' | wc -l", shell=True)  # Gets all the connected clients from ntp
+    try:
+      output = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $1}' | wc -l", shell=True)  # Gets all the connected clients from ntp
+    except CalledProcessError as e:
+        output = e.output
+        returncode = e.returncode
+        print returncode
+    
     highestCount = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $4}' | sort -nrk1,1 | line", shell=True)  # Gets the highest connections from connected clients
     theStr = "Con users: {:>6}".format(output)
     theStr += "Hi cons: {:>8}".format(highestCount)
