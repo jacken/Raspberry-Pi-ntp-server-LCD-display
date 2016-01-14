@@ -189,9 +189,9 @@ class lcdScreen(object):
         output = e.output
         returncode = e.returncode
         print returncode
-      theStr = "Con users: {:>6}".format(output)
-      theStr += "Hi cons: {:>8}".format(highestCount)
-      self.writeLCD(theStr)
+    theStr = "Con users: {:>6}".format(output)
+    theStr += "Hi cons: {:>8}".format(highestCount)
+    self.writeLCD(theStr)
     
 
 if __name__ == '__main__':
