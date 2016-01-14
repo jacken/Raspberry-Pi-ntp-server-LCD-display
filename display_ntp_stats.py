@@ -183,10 +183,15 @@ class lcdScreen(object):
         returncode = e.returncode
         print returncode
     
-    highestCount = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $4}' | sort -nrk1,1 | line", shell=True)  # Gets the highest connections from connected clients
-    theStr = "Con users: {:>6}".format(output)
-    theStr += "Hi cons: {:>8}".format(highestCount)
-    self.writeLCD(theStr)
+    try:
+      highestCount = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $4}' | sort -nrk1,1 | line", shell=True)  # Gets the highest connections from connected clients
+    except CalledProcessError as e:
+        output = e.output
+        returncode = e.returncode
+        print returncode
+      theStr = "Con users: {:>6}".format(output)
+      theStr += "Hi cons: {:>8}".format(highestCount)
+      self.writeLCD(theStr)
     
 
 if __name__ == '__main__':
