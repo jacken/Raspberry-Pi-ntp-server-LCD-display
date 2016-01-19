@@ -126,7 +126,7 @@ class lcdScreen(object):
     try:
       output = subprocess.check_output("ntpq -c rv", shell=True)
       returncode = 0
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         output = e.output
         returncode = e.returncode
         print returncode
@@ -135,7 +135,7 @@ class lcdScreen(object):
     precision = ""
     clkjitter = ""
     clkwander = ""
-    search = re.search( r'.*precision=(.*?),.*clk_jitter=(.*),', output, re.M|re.S)
+    search = re.search( r'.*precision=(.*?),.*clk_jitter=(.*?),', output, re.M|re.S)
     if search:
       precision = float(search.group(1))
       precision = (1/2.0**abs(precision))*1000000.0
@@ -147,7 +147,7 @@ class lcdScreen(object):
     """Statistics from ntptime command"""
     try:
       output = subprocess.check_output("ntptime", shell=True)
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         output = e.output
         returncode = e.returncode
         print returncode
@@ -176,16 +176,17 @@ class lcdScreen(object):
       
   def connectedUserView(self):
     """Shows connected clients to ntpd"""
+    highestCount = "NaN"
     try:
-      output = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $1}' | wc -l", shell=True)  # Gets all the connected clients from ntp
-    except CalledProcessError as e:
+      output = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $1}' | uniq | wc -l", shell=True)  # Gets all the connected clients from ntp
+    except subprocess.CalledProcessError as e:
         output = e.output
         returncode = e.returncode
         print returncode
     
     try:
       highestCount = subprocess.check_output("ntpdc -n -c monlist | awk '{if(NR>2)print $4}' | sort -nrk1,1 | line", shell=True)  # Gets the highest connections from connected clients
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         output = e.output
         returncode = e.returncode
         print returncode
