@@ -135,12 +135,17 @@ class lcdScreen(object):
     precision = ""
     clkjitter = ""
     clkwander = ""
-    search = re.search( r'.*precision=(.*?),.*clk_jitter=(.*?),', output, re.M|re.S)
-    if search:
-      precision = float(search.group(1))
-      precision = (1/2.0**abs(precision))*1000000.0
+    theStr = ""
+    searchResult = re.search( r'precision=(.*?),', output, re.S)
+    precision = searchResult.group(1)
+    searchResult = re.search( r'.*clk_jitter=(.*?),', output, re.S)
+    clk_jitter = searchResult.group(1)
+    if precision and clk_jitter:
+      precision = (1/2.0**abs(float(precision)))*1000000.0
       theStr = "Prec: {:.5f} {}s\n".format(precision,chr(0xE4))
-      theStr += "Jitter: {:>5} ms".format(search.group(2))
+      theStr += "ClkJit: {:>4} ms".format(clk_jitter)
+    else:
+      theStr = "Error: No\nPrecision data"
     self.writeLCD(theStr)
 
   def ntptimeInfo(self):
@@ -152,16 +157,22 @@ class lcdScreen(object):
         returncode = e.returncode
         print returncode
     precision = re.search( r'precision (.* us).*stability (.* ppm)', output, re.M|re.S)
-    theStr = "Precis: {:>8}\n".format(precision.group(1))
-    theStr += "Stabi: {:>9}".format(precision.group(2))
+    if precision:
+      theStr = "Precis: {:>8}\n".format(precision.group(1))
+      theStr += "Stabi: {:>9}".format(precision.group(2))
+    else:
+      theStr = "No info\nError"
     self.writeLCD(theStr)
 
   def clockperfView(self):
     """Shows jitter etc"""
     output = subprocess.check_output("ntptime", shell=True)
     search = re.search( r'TAI offset.*offset (.*? us).*jitter (.* us)', output, re.M|re.S)
-    theStr = "Offset: {:>8}\n".format(search.group(1))
-    theStr += "OSjitt: {:>8}".format(search.group(2))
+    if search:
+      theStr = "Offset: {:>8}\n".format(search.group(1))
+      theStr += "OSjitt: {:>8}".format(search.group(2))
+    else:
+      theStr = "No offset\ninfo error"
     self.writeLCD(theStr)
     
   def updateLCD(self):
